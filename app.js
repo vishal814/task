@@ -3,8 +3,27 @@ const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+
+
 const app = express();
 const PORT = 8080;
+
+async function connectDB() {
+  try {
+    await mongoose.connect(process.env.DB_CONNECT_STRING);
+    console.log("✅ Connected to MongoDB");
+  } catch (err) {
+    console.error("❌ MongoDB connection failed:", err);
+    process.exit(1);
+  }
+}
+connectDB();
+const Image = require("./models/Image");
+app.use(express.json());
+
 
 // Serve static files from the public directory under /public
 app.use("/public", express.static(path.join(__dirname, "public")));
@@ -21,47 +40,75 @@ const storage = multer.diskStorage({
   }
 })
   const upload = multer({ storage });
-app.use("/public/images", express.static(path.join(__dirname, "Public", "images")))    
+
+app.post("/api/upload"  , upload.single("image"), async(req, res) => {
+    const { title, category, tags } = req.body;
+    if (!req.file || !title || !category) {
+    return res.status(400).json({
+      isSuccess: false,
+      message: "Image, title, and category are required"
+    });
+  }
+try{
+const tagArray = tags ? tags.split(",").map((tag) => tag.trim()) : [];
+const newImage = new Image({
+  title,
+  category,
+  tags: tagArray,
+  imageUrl: `/public/images/${req.file.filename}`
+});
+
+ await newImage.save();
+ res.status(201).json({
+    isSuccess: true,
+    message: "Image uploaded successfully",
+    image: newImage
+  });
+}
+catch (error) {
+  console.error(error);
+  res.status(500).json({
+    isSuccess: false,
+    message: "An error occurred while uploading the image"
+  });
+}
+});
 
 app.get("/api/images", async (req, res) => {
-    try {
-        const imagesPath = path.join(__dirname, "Public", "images");
-        const files = await fs.promises.readdir(imagesPath);
+  const { cat, tags } = req.query;
 
-        // Filter out .gitkeep and create full URLs
-        const imageUrls = files
-            .filter((file) => file !== ".gitkeep")
-            .map((file) => `http://localhost:${PORT}/Public/images/${file}`)
-            
+  let filter = {};
 
-        res.json({
-            isSuccess: true,
-            message: "All images fetched",
-            data: imageUrls,
-        })
-    } catch (error) {
-        res.status(500).json({
-            isSuccess: false,
-            message: "Error reading image directory",
-            data: [],
-        })
-    }
-})
-app.post("/api/upload"  , upload.single("image"), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({
-            isSuccess: false,
-            message: "No file uploaded",
-        });
-    }
+  if (cat) {
+    filter.category = cat;
+  }
 
-    const imageUrl = `http://localhost:${PORT}/public/images/${req.file.filename}`;
+  if (tags) {
+    const tagArray = tags.split(",").map(tag => tag.trim());
+    filter.tags = { $in: tagArray };
+  }
+
+  try {
+    const images = await Image.find(filter);
+
+    const fullData = images.map(img => ({
+      ...img._doc,
+      imageUrl: `http://localhost:${PORT}${img.imageUrl}`
+    }));
+
     res.json({
-        isSuccess: true,
-        message: "Image uploaded successfully",
-        data: imageUrl,
-    })
-})
+      isSuccess: true,
+      message: "Filtered images fetched",
+      data: fullData
+    });
+  } catch (err) {
+    res.status(500).json({
+      isSuccess: false,
+      message: "Error fetching images",
+      data: []
+    });
+  }
+});
 
 
 app.listen(PORT, () => {
