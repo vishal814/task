@@ -14,9 +14,9 @@ const PORT = 8080;
 async function connectDB() {
   try {
     await mongoose.connect(process.env.DB_CONNECT_STRING);
-    console.log("✅ Connected to MongoDB");
+    console.log("Connected to MongoDB");
   } catch (err) {
-    console.error("❌ MongoDB connection failed:", err);
+    console.error("MongoDB connection failed:", err);
     process.exit(1);
   }
 }
@@ -43,7 +43,8 @@ const storage = multer.diskStorage({
 
 app.post("/api/upload"  , upload.single("image"), async(req, res) => {
     const { title, category, tags } = req.body;
-    if (!req.file || !title || !category) {
+    if (!req.file || !title || !category) 
+      {
     return res.status(400).json({
       isSuccess: false,
       message: "Image, title, and category are required"
@@ -75,7 +76,7 @@ catch (error) {
 });
 
 app.get("/api/images", async (req, res) => {
-  const { cat, tags } = req.query;
+  const { cat, tags,showPrivate } = req.query;
 
   let filter = {};
 
@@ -86,6 +87,13 @@ app.get("/api/images", async (req, res) => {
   if (tags) {
     const tagArray = tags.split(",").map(tag => tag.trim());
     filter.tags = { $in: tagArray };
+  }
+
+  if (showPrivate === "true") {
+    filter.isPublic = false; // Show private images
+  }
+  else {
+    filter.isPublic = true; // Show only public images
   }
 
   try {
@@ -109,6 +117,53 @@ app.get("/api/images", async (req, res) => {
     });
   }
 });
+
+app.put('/api/images/:id', async (req, res) => {
+  const { title, category, tags } = req.body;
+
+  const updateFields = {};
+  if (title) updateFields.title = title;
+  if (category) updateFields.category = category;
+  if (tags) updateFields.tags = tags;
+
+  try {
+    const updatedImage = await Image.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!updatedImage) {
+      return res.status(404).json({ isSuccess: false, message: 'Image not found' });
+    }
+
+    res.json({ isSuccess: true, message: 'Image updated', data: updatedImage });
+  } catch (err) {
+    res.status(500).json({ isSuccess: false, message: 'Update failed' });
+  }
+}); 
+
+app.patch('/api/images/:id/toggle', async (req, res) => {
+  try {
+    const image = await Image.findById(req.params.id);
+
+    if (!image) {
+      return res.status(404).json({ isSuccess: false, message: 'Image not found' });
+    }
+
+    image.isPublic = !image.isPublic;
+    await image.save();
+
+    res.json({
+      isSuccess: true,
+      message: `Image is now ${image.isPublic ? 'public' : 'private'}`,
+      data: image
+    });
+  } catch (err) {
+    res.status(500).json({ isSuccess: false, message: 'Toggle failed' });
+  }
+});
+
 
 
 app.listen(PORT, () => {
