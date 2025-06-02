@@ -164,6 +164,31 @@ app.patch('/api/images/:id/toggle', async (req, res) => {
   }
 });
 
+app.delete('/api/images/:id', async (req, res) => {
+  try {
+    const image = await Image.findById(req.params.id);
+
+    if (!image) {
+      return res.status(404).json({ isSuccess: false, message: 'Image not found' });
+    }
+
+    // Delete the image file from the filesystem
+    const filePath = path.join(__dirname, image.imageUrl);
+    fs.unlink(filePath, async (err) => {
+      if (err && err.code !== 'ENOENT') {
+        return res.status(500).json({ isSuccess: false, message: 'Failed to delete image file' });
+      }
+
+      // Delete from MongoDB
+      await Image.findByIdAndDelete(req.params.id);
+
+      res.json({ isSuccess: true, message: 'Image deleted successfully' });
+    });
+
+  } catch (error) {
+    res.status(500).json({ isSuccess: false, message: 'Server error' });
+  }
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
