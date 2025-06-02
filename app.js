@@ -26,7 +26,7 @@ app.use(express.json());
 
 
 // Serve static files from the public directory under /public
-app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/api/images", express.static(path.join(__dirname, "public")));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
 })
   const upload = multer({ storage });
 
-app.post("/api/upload"  , upload.single("image"), async(req, res) => {
+app.post("/api/images"  , upload.single("image"), async(req, res) => {
     const { title, category, tags } = req.body;
     if (!req.file || !title || !category) 
       {
@@ -163,7 +163,6 @@ app.patch('/api/images/:id/toggle', async (req, res) => {
     res.status(500).json({ isSuccess: false, message: 'Toggle failed' });
   }
 });
-
 
 
 app.listen(PORT, () => {
