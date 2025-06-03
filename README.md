@@ -6,12 +6,14 @@ This is a Node.js API that allows uploading, storing, filtering, and managing im
 
 ##  Prerequisites
 
-Make sure you have [Node.js](https://nodejs.org/en/) installed using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Make sure you have [Node.js](https://nodejs.org/en/) installed using [npm]
 
 
 Clone the repository and install dependencies:
 git clone <https://github.com/vishal814/task>
+```bash
 npm install
+```
 Create a .env file by running the following command. And add the value into .env
 And add the following variables to .env:
 
