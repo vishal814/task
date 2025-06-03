@@ -8,28 +8,20 @@ This is a Node.js API that allows uploading, storing, filtering, and managing im
 
 Make sure you have [Node.js](https://nodejs.org/en/) installed using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-```bash
-nvm use
-```
-Enable corepack and install pnpm:
-```bash
-corepack enable
-```
+
 Clone the repository and install dependencies:
 git clone <https://github.com/vishal814/task>
-pnpm install
+npm install
 Create a .env file by running the following command. And add the value into .env
-
-```bash
-cp .env.sample .env
-```
 And add the following variables to .env:
 
 PORT=8080
+
 DB_CONNECT_STRING=mongodb://localhost:27017/imageDB
+
 run the development server:
 ```bash
-pnpm run dev
+npm run dev
 ```
 # Endpoints
 POST /api/images
@@ -62,8 +54,7 @@ Uploaded images are stored in:/public/images
 ```bash
 http://localhost:8080/public/images/<filename>
 ```
-# Tech Stack
-🛠️ Tech Stack
+#  Dependencies
 
 Node.js
 
