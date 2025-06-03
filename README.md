@@ -6,16 +6,14 @@ This is a Node.js API that allows uploading, storing, filtering, and managing im
 
 ##  Prerequisites
 
-Make sure you have [Node.js](https://nodejs.org/en/) installed using [npm]
-
+Make sure you have [Node.js](https://nodejs.org/en/) installed if not go to this link [https://nodejs.org/en/download]
 
 Clone the repository and install dependencies:
 git clone <https://github.com/vishal814/task>
 ```bash
 npm install
 ```
-Create a .env file by running the following command. And add the value into .env
-And add the following variables to .env:
+Create a .env file and add the following variables to .env:
 
 PORT=8080
 
@@ -26,30 +24,13 @@ run the development server:
 npm run dev
 ```
 # Endpoints
-POST /api/images
-Upload an image with metadata.
-Form-Data fields:
-image (File, required)
-title (Text, required)
-category (Text, required)
-tags (Text, comma-separated)
-isPublic (Text, optional: true/false)
-
-GET /api/images
-Fetch images with optional filters.
-Query Params:
-cat=nature
-tags=sunset,beach
-showPrivate=true
-
-PUT /api/images/:id
-Update title, category, or tags of an image.
-
-PATCH /api/images/:id/toggle
-Toggle the isPublic status of an image.
-
-DELETE /api/images/:id
-Delete the image document and file.
+| Method | Endpoint                        | Description                                     |
+|--------|----------------------------------|-------------------------------------------------|
+| POST   | `/api/images`                   | Upload an image with metadata (form-data)       |
+| GET    | `/api/images`                   | Get all public images or filter by category/tags |
+| PUT    | `/api/images/:id`               | Update title, category, or tags of an image     |
+| PATCH  | `/api/images/:id/toggle`        | Toggle `isPublic` status of an image            |
+| DELETE | `/api/images/:id`               | Delete image from database and filesystem       |
 
 # Static files
 Uploaded images are stored in:/public/images
@@ -67,5 +48,6 @@ MongoDB + Mongoose
 Multer 
 
 dotenv
+
 
 
