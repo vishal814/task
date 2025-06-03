@@ -1,68 +1,77 @@
-# Express Task
-# 📸 Express Image Upload API
+# Image Upload API
 
-A simple Node.js Express app that allows users to upload images, store them on the server, and retrieve all uploaded images through a REST API.
+This is a Node.js API that allows uploading, storing, filtering, and managing images with metadata using MongoDB and Express.
 
----
 
-## Project Structure
-project/
-├── public/
-│ └── images/ # Uploaded images are saved here
-├── server.js # Main Express server file
-├── package.json
-└── README.md
-Install Dependencies
-npm install
-Start Server 
-node server.js
-API Endpoints
-URL: POST /api/upload
 
-Content-Type: multipart/form-data
+##  Prerequisites
 
-Field Name: image
+Make sure you have [Node.js](https://nodejs.org/en/) installed using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-Using Postman:
-Method: POST
+```bash
+nvm use
+```
+Enable corepack and install pnpm:
+```bash
+corepack enable
+```
+Clone the repository and install dependencies:
+git clone <https://github.com/vishal814/task>
+pnpm install
+Create a .env file by running the following command. And add the value into .env
 
-Body → form-data
+```bash
+cp .env.sample .env
+```
+And add the following variables to .env:
 
-Key: image
+PORT=8080
+DB_CONNECT_STRING=mongodb://localhost:27017/imageDB
+run the development server:
+```bash
+pnpm run dev
+```
+# Endpoints
+POST /api/images
+Upload an image with metadata.
+Form-Data fields:
+image (File, required)
+title (Text, required)
+category (Text, required)
+tags (Text, comma-separated)
+isPublic (Text, optional: true/false)
 
-Type: File
+GET /api/images
+Fetch images with optional filters.
+Query Params:
+cat=nature
+tags=sunset,beach
+showPrivate=true
 
-Choose any image file
+PUT /api/images/:id
+Update title, category, or tags of an image.
 
- Sample Response:
-Edit
-{
-  "isSuccess": true,
-  "message": "File uploaded successfully",
-  "data": {
-    "originalName": "bg1.png",
-    "savedName": "1748244176791-bg1.png",
-    "url": "http://localhost:8080/public/images/1748244176791-bg1.png"
-  }
-}
- Get All Images
-URL: GET /api/images
+PATCH /api/images/:id/toggle
+Toggle the isPublic status of an image.
 
-Sample Response:
-json
-Edit
-{
-  "isSuccess": true,
-  "message": "All images fetched",
-  "data": [
-    "http://localhost:8080/public/images/bg1.png",
-    "http://localhost:8080/public/images/bg2.jpg"
-  ]
-}
-🔧 Built With
+DELETE /api/images/:id
+Delete the image document and file.
+
+# Static files
+Uploaded images are stored in:/public/images
+```bash
+http://localhost:8080/public/images/<filename>
+```
+# Tech Stack
+🛠️ Tech Stack
 Node.js
 
-Express.js
+Express
 
-Multer – Middleware for file uploads
+MongoDB + Mongoose
+
+Multer 
+
+dotenv
+
 
