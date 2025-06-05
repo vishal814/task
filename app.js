@@ -6,9 +6,9 @@ const multer = require("multer");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-
-
 const app = express();
+
+
 const PORT = 8080;
 
 async function connectDB() {
@@ -17,14 +17,13 @@ async function connectDB() {
     console.log("Connected to MongoDB");
   } catch (err) {
     console.error("MongoDB connection failed:", err);
-    process.exit(1);
   }
 }
 connectDB();
 const Image = require("./models/Image");
-app.use(express.json());
 
 
+// app.use(express.json());
 // Serve static files from the public directory under /public
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -41,38 +40,60 @@ const storage = multer.diskStorage({
 })
   const upload = multer({ storage });
 
-app.post("/api/image"  , upload.single("image"), async(req, res) => {
-    const { title, category, tags } = req.body;
-    if (!req.file || !title || !category) 
-      {
+app.post("/api/images", upload.single("image"), async (req, res) => {
+console.log("🧾 req.body:", req.body);
+  console.log("📦 req.file:", req.file);
+
+  const { title, category, tags } = req.body;
+
+  if (!req.file || !title || !category) {
     return res.status(400).json({
       isSuccess: false,
       message: "Image, title, and category are required"
     });
   }
-try{
-const tagArray = tags ? tags.split(",").map((tag) => tag.trim()) : [];
-const newImage = new Image({
-  title,
-  category,
-  tags: tagArray,
-  imageUrl: `/public/images/${req.file.filename}`
+
+ const validcategories = ['nature', 'travel', 'science', 'technology', 'sports'];
+  if (!validcategories.includes(category)) {
+    return res.status(400).json({
+      isSuccess: false,
+      message: "This is an invalid category"
+    });
+  }
+  try {
+    const tagArray = tags ? tags.split(",").map(tag => tag.trim()) : [];
+
+    const newImage = new Image({
+      title,
+      category,
+      tags: tagArray,
+      imageUrl: `/public/images/${req.file.filename}`
+    });
+
+    await newImage.save();
+
+    res.status(201).json({
+      isSuccess: true,
+      message: "Image uploaded successfully",
+      data: newImage
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      isSuccess: false,
+      message: "An error occurred while uploading the image"
+    });
+  }
 });
 
- await newImage.save();
- res.status(201).json({
+
+const Categories = ['nature', 'travel', 'science', 'technology', 'sports'];
+app.get('/api/category', (req, res) => {
+  res.json({
     isSuccess: true,
-    message: "Image uploaded successfully",
-    image: newImage
+    message: 'Available categories fetched successfully',
+    data: Categories
   });
-}
-catch (error) {
-  console.error(error);
-  res.status(500).json({
-    isSuccess: false,
-    message: "An error occurred while uploading the image"
-  });
-}
 });
 
 app.get("/api/images", async (req, res) => {
@@ -97,6 +118,7 @@ app.get("/api/images", async (req, res) => {
   }
 
   try {
+    console.log("Filter:", filter); 
     const images = await Image.find(filter);
 
     const fullData = images.map(img => ({
@@ -189,6 +211,8 @@ app.delete('/api/images/:id', async (req, res) => {
     res.status(500).json({ isSuccess: false, message: 'Server error' });
   }
 });
+
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
