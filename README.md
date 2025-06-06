@@ -10,6 +10,7 @@ Make sure you have [Node.js](https://nodejs.org/en/) installed if not go to this
 
 Clone the repository and install dependencies:
 git clone <https://github.com/vishal814/task>
+cd task
 ```bash
 npm install
 ```
