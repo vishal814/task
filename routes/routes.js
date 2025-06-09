@@ -2,7 +2,10 @@ import express from "express";
 
 const router = express.Router();
 import multer from "multer";
+import { fileURLToPath } from "url";
 import path from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import fs from "fs";
 import {
   uploadImage,
@@ -19,6 +22,7 @@ const storage = multer.diskStorage({
     fs.mkdirSync(uploadPath, { recursive: true });
     cb(null, uploadPath);
   },
+
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.originalname}`;
     cb(null, uniqueName);

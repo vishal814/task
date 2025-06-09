@@ -17,8 +17,7 @@ npm install
 Create a .env file and add variables
 ```bash
 cp .env_sample.env
-
-
+```
 
 run the development server:
 ```bash
@@ -38,17 +37,5 @@ Uploaded images are stored in:/public/images
 ```bash
 http://localhost:8080/public/images/<filename>
 ```
-#  Dependencies
-
-Node.js
-
-Express
-
-MongoDB + Mongoose
-
-Multer 
-
-dotenv
-
 
 

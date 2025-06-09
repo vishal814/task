@@ -5,7 +5,7 @@ const Categories = ['nature', 'travel', 'science', 'technology', 'sports'];
 
 export const uploadImage = async (req, res) => {
   const { title, category, tags } = req.body;
-
+ 
   if (!req.file || !title || !category) {
     return res.status(400).json({
       isSuccess: false,

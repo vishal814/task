@@ -13,7 +13,6 @@
     "description": "",
     "dependencies": {
         "express": "^5.1.0",
-        "fs": "^0.0.1-security",
         "mongoose": "^8.15.1",
         "multer": "^2.0.0",
         "router": "^2.2.0"

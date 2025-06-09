@@ -3,4 +3,3 @@ node_modules
 public/*
 !public/.gitkeep
 .env
-.env_sample.env
