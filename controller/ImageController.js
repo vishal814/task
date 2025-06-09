@@ -1,9 +1,9 @@
-const Image = require("../models/Image");
-const path = require("path");
-const fs = require("fs");
+import Image from "../models/Image.js";
+import path from "path";
+import fs from "fs";
 const Categories = ['nature', 'travel', 'science', 'technology', 'sports'];
 
-const uploadImage = async (req, res) => {
+export const uploadImage = async (req, res) => {
   const { title, category, tags } = req.body;
 
   if (!req.file || !title || !category) {
@@ -35,7 +35,7 @@ const uploadImage = async (req, res) => {
     });
   }
 };
-const getImages= async (req, res) => {
+export const getImages= async (req, res) => {
   const { cat, tags,showPrivate } = req.query;
 
   let filter = {};
@@ -78,7 +78,7 @@ const getImages= async (req, res) => {
     });
   }
 };
-const updateImage = async (req, res) => {
+export const updateImage = async (req, res) => {
   const { title, category, tags } = req.body;
   const updateFields = {};
   if (title) updateFields.title = title;
@@ -102,7 +102,7 @@ const updateImage = async (req, res) => {
   }
 };
 
-const toggleImage = async (req, res) => {
+export const toggleImage = async (req, res) => {
   try {
     const image = await Image.findById(req.params.id);
     if (!image) {
@@ -122,7 +122,7 @@ const toggleImage = async (req, res) => {
   }
 };
 
-const deleteImage = async (req, res) => {
+export const deleteImage = async (req, res) => {
   try {
     const image = await Image.findById(req.params.id);
     if (!image) {
@@ -142,7 +142,7 @@ const deleteImage = async (req, res) => {
     res.status(500).json({ isSuccess: false, message: 'Server error' });
   }
 };
-const getCategories = (req, res) => {
+export const getCategories = (req, res) => {
   res.json({
     isSuccess: true,
     message: 'Available categories fetched successfully',
@@ -150,11 +150,3 @@ const getCategories = (req, res) => {
   });
 };
 
-module.exports = {
-  uploadImage,
-  getImages,
-  getCategories,
-  updateImage,
-  toggleImage,
-  deleteImage
-};

@@ -14,11 +14,11 @@ cd task
 ```bash
 npm install
 ```
-Create a .env file and add the following variables to .env:
+Create a .env file and add variables
+```bash
+cp .env_sample.env
 
-PORT=8080
 
-DB_CONNECT_STRING=mongodb://localhost:27017/imageDB
 
 run the development server:
 ```bash

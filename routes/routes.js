@@ -1,16 +1,17 @@
-const express = require("express");
+import express from "express";
+
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const {
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import {
   uploadImage,
   getImages,
   getCategories,
   updateImage,
   toggleImage,
   deleteImage
-} = require("../controller/ImageController");
+} from "../controller/ImageController.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -33,4 +34,4 @@ router.put("/images/:id", updateImage);
 router.patch("/images/:id/toggle", toggleImage);
 router.delete("/images/:id", deleteImage);
 
-module.exports = router;
+export default router;
