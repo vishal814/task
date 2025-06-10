@@ -57,12 +57,12 @@ export const getImages= async (req, res) => {
   }
 
   try {
-    console.log("Filter:", filter); 
+    // console.log("Filter:", filter); 
     const images = await Image.find(filter);
 
     const Data = images.map(img => ({
       ...img._doc,
-      imageUrl: `http://localhost:${PORT}${img.imageUrl}`
+      imageUrl: `http://localhost:8080${img.imageUrl}`
     }));
 
     res.json({
@@ -71,6 +71,7 @@ export const getImages= async (req, res) => {
       data: Data
     });
   } catch (err) {
+    console.error("GET /api/images failed:", err);
     res.status(500).json({
       isSuccess: false,
       message: "Error fetching images",
