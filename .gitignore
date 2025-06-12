@@ -3,3 +3,6 @@ node_modules
 public/*
 !public/.gitkeep
 .env
+tsconfig.json
+dist
+sample.js
