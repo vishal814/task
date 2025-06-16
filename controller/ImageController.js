@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 export const uploadImage = async (req, res) => {
     const { title, category, tags } = req.body;
     if (!req.file || !title || !category) {
@@ -141,3 +143,5 @@ export const getCategories = (req, res) => {
         data: Categories
     });
 };
+
+

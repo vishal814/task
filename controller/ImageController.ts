@@ -12,6 +12,7 @@ const __dirname = dirname(__filename);
 export const uploadImage = async (req:Request, res:Response): Promise<void> => {
 
   const { title, category, tags } = req.body;
+  
  
   if (!req.file || !title || !category) {
      res.status(400).json({
