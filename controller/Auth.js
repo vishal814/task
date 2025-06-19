@@ -27,6 +27,7 @@ export const signup = async (req, res) => {
         const payload = {
             user: {
                 id: user.id,
+                // username: user.username,
             },
         };
 
@@ -59,10 +60,12 @@ export const login = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
+        
 
         const payload = {
             user: {
                 id: user.id,
+                username: user.username, // Include username in the payload
             },
         };
 
@@ -87,3 +90,18 @@ export const logout = async (req, res) => {
         message: 'Logged out successfully'
     });
 };
+export const profile = async (req, res) => {
+    //console.log("req.user:", req.user);
+ 
+    try{
+       const user = {
+        id: req.user.id,
+        username: req.user.username
+    };
+    res.json({user});
+    }
+    catch(err) {
+        console.error(err);
+          res.status(500).json({ msg: 'Server error' });
+    }
+}
